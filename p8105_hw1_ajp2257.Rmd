@@ -1,0 +1,30 @@
+---
+title: "github_document"
+author: "Amy Pitts"
+date: "9/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+#library(tibble)
+```
+
+## Problem 1
+This problem asks us to create a dataframe comprised of various variables. 
+a random sample of size 10 from a standard Normal distribution
+a logical vector indicating whether elements of the sample are greater than 0
+a character vector of length 10
+a factor vector of length 10, with 3 different factor “levels”
+```{r Problem 1}
+set.seed(1) 
+problem1_data = tibble(
+  random_sample = rnorm(10), # a random sample of size 10 from a standard Normal distribution
+  vec_logic = ifelse(random_sample > 0, TRUE, FALSE), # a logical vector indicating whether elements of the sample are greater than 0
+  vec_char = c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j"), #a character vector of length 10
+  vec_factor = factor(c(rep(c("red", "blue", "green"),3),"red")) #a factor vector of length 10, with 3 different factor “levels”
+)
+
+problem1_data #printing the data 
+```
