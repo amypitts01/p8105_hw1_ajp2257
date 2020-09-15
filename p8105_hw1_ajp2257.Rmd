@@ -6,20 +6,19 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
-#knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-#library(kableExtra)
-#library(tibble)
 ```
 
 ## Problem 1
+Creating a dataframe based on the specifications
 ```{r Create_df}
 prob1_df = 
   tibble(
-    samp = rnorm(10),
-    samp_gt_0 = samp > 0,
-    char_vec = c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j"),
-    factor_vec = factor(c("low", "low", "low", "mod", "mod", "mod", "high", "high", "high", "high"))
+    samp = rnorm(10), # a random sample of size 10 from a standard Normal distribution
+    samp_gt_0 = samp > 0, # a logical vector indicating whether elements of the sample are greater than 0
+    char_vec = c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j"), # a character vector of length 10
+    factor_vec = factor(c("low", "low", "low", "mod", "mod", "mod", "high", "high", "high", "high")) 
+      # a factor vector of length 10, with 3 different factor “levels”
   )
 prob1_df
 ```
@@ -35,7 +34,6 @@ So far the random sample is the only one that I know should work. This is becuas
 Number and logical and okay for taking the mean but not character. 
 
 ```{r try_numeric}
-as.numeric(pull(prob1_df, samp))
 as.numeric(pull(prob1_df, samp_gt_0)) #this works
 as.numeric(pull(prob1_df, char_vec)) #this does not
 as.numeric(pull(prob1_df, factor_vec)) #this one worked
@@ -44,13 +42,14 @@ as.numeric(pull(prob1_df, factor_vec)) #this one worked
 The as numeric function works on the logic statement and the factored variable but not the character variable. The logic statement was assigned 0 and 1s while the factored variable was assigned 1 through 3. If i had factored the character variable before doing the as numeric function then the character variables would have been numbers rather than NA. 
 
 ```{r more_numeric}
-#convert the logical vector to numeric, and multiply the random sample by the result
+# convert the logical vector to numeric, and multiply the random sample by the result
 as.numeric(pull(prob1_df, samp_gt_0)) * pull(prob1_df, samp)
 
-#convert the logical vector to a factor, and multiply the random sample by the result
+# convert the logical vector to a factor, and multiply the random sample by the result
 factor(pull(prob1_df, samp_gt_0)) * pull(prob1_df, samp)
 
-#convert the logical vector to a factor and then convert the result to numeric, and multiply the random sample by the result
+# convert the logical vector to a factor and then convert the result to numeric, 
+  # and multiply the random sample by the result
 as.numeric(factor(pull(prob1_df, samp_gt_0))) * pull(prob1_df, samp)
 ```
 
@@ -63,7 +62,7 @@ data("penguins", package = "palmerpenguins")
 ```{r explore_df}
 dim(penguins) #printing th dimentions
 variable.names(penguins) #the vraible names
-mean(penguins$flipper_length_mm, na.rm=TRUE) #mean flipper length
+mean(pull(penguins, flipper_length_mm), na.rm=TRUE) #mean flipper length
 ```
 This is a 8 variable dataset with 344 entries. The 8 variable names are listed above. The mean flipper length is 200.9152
 
@@ -74,16 +73,15 @@ From this quick summary I see that species and island are factored with three op
 
 I am now going to summarize the data by grouping the pengiuns first by species and then by island. 
 ```{r more_explore, warning = FALSE, message = FALSE}
-penguins %>% 
+group_summary = penguins %>% 
   group_by(species, island) %>%
   summarise(n = n(),
             bill_lenth_mean = mean(bill_length_mm, na.rm = TRUE),
             bill_dept_mean  = mean(bill_depth_mm, na.rm = TRUE), 
             flipper_lenth_mean = mean(flipper_length_mm, na.rm = TRUE),
             body_mass_mean = mean(body_mass_g, na.rm = TRUE)) 
-
+print(group_summary, width=Inf)
 ```
-
 
 First thing we notice is that Adelie penguin is on all three island while the Chinstrap is on the Dream island and the Gentoo only on the Biscoe island.  The next thing I notice is that the bill depth is much smaller and the body mass seems to be much bigger for the Gentoo pengiun compared to all the species. Overall the Adelie pengiun and the Chinstrap seem to be a little more comparable with the bill length being a little bigger than the Adelie comparing the means of the variables. 
 
